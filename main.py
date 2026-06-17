@@ -46,7 +46,7 @@ def post_page(request: Request, post_id: int):
                 {"post": post, "title" : title}
                 )
 
-        
+
     raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail= f"The post, with post_id: {post_id}, was not found")
 
 
@@ -59,7 +59,7 @@ def get_post(post_id: int):
     for post in posts:
         if post.get("id") == post_id:
             return post
-        
+
     raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail= f"The post, with post_id: {post_id}, was not found")
 
 ## StarletteHTTPException Handler
