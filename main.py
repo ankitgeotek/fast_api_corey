@@ -45,7 +45,10 @@ app.include_router(posts.router, prefix="/api/posts", tags=["posts"])
 @app.get("/", include_in_schema= False) # we can make this route disappear from the docs by using include_in_schema = False
 @app.get("/posts", include_in_schema= False)
 async def home(request: Request, db: Annotated[AsyncSession, Depends(get_db)]):
-    result = await db.execute(select(models.Post).options(selectinload(models.Post.author)))
+    result = await db.execute(
+        select(models.Post)
+        .options(selectinload(models.Post.author))
+        .order_by(models.Post.date_posted.desc()))
     posts = result.scalars().all()
     return templates.TemplateResponse(request, "home.html", {"posts": posts, "title" : "Home"})
 
@@ -97,7 +100,8 @@ async def user_posts_page(
     result = await db.execute(
         select(models.Post)
         .options(selectinload(models.Post.author))
-        .where(models.Post.user_id == user_id),
+        .where(models.Post.user_id == user_id)
+        .order_by(models.Post.date_posted.desc()),
     )
     posts = result.scalars().all()
     return templates.TemplateResponse(
